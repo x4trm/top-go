@@ -28,3 +28,18 @@ Run the compiled binary
 ```bash
 $ ./top-go
 ```
+
+## Dependencies
+
+This project uses the following Go libraries:
+`github.com/shirou/gopsutil/v3`: For retrieving system and process information.
+
+## Project Structure
+
+`main.go`: The main entry point of the application.  
+`internal/monitor/`: Contains the logic for collecting system and process information.  
+`internal/display/`: Contains the logic for rendering the collected data to the terminal.
+
+## Example Output
+
+![screen](./screen.png)
