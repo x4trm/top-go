@@ -6,7 +6,6 @@ import (
 	"top-go/internal/monitor"
 )
 
-
 func main() {
 	monitor := monitor.NewMonitor()
 	renderer := display.NewRenderer()
