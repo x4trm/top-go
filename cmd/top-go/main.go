@@ -1,12 +1,16 @@
 package main
 
 import (
+	"flag"
 	"time"
 	"top-go/internal/display"
 	"top-go/internal/monitor"
 )
 
 func main() {
+	numProcesses := flag.Int("n", 20, "Number of processes to display")
+	flag.Parse()
+
 	monitor := monitor.NewMonitor()
 	renderer := display.NewRenderer()
 
@@ -16,7 +20,7 @@ func main() {
 			continue
 		}
 
-		procInfo := monitor.GetTopProcesses(20)
+		procInfo := monitor.GetTopProcesses(*numProcesses)
 		if procInfo == nil {
 			continue
 		}

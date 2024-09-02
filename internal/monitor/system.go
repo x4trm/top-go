@@ -11,7 +11,6 @@ import (
 	"github.com/shirou/gopsutil/process"
 )
 
-// SystemInfo przechowuje informacje o systemie.
 type SystemInfo struct {
 	Uptime        string
 	Users         int

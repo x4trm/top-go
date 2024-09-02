@@ -12,7 +12,14 @@ func NewRenderer() *Renderer {
 	return &Renderer{}
 }
 
+func (r *Renderer) ClearScreen(){
+	fmt.Print("\033[H\033[2J")
+}
+
 func (r *Renderer) Render(sysInfo *monitor.SystemInfo, procInfo []*monitor.ProcessInfo) {
+	
+	r.ClearScreen()
+	
 	fmt.Printf("top - %s up %s,  %d user(s),  load average: %.2f, %.2f, %.2f\n", time.Now().Format("15:04:05"),
 		sysInfo.Uptime, sysInfo.Users, sysInfo.LoadAverage[0], sysInfo.LoadAverage[1], sysInfo.LoadAverage[2])
 
@@ -31,8 +38,36 @@ func (r *Renderer) Render(sysInfo *monitor.SystemInfo, procInfo []*monitor.Proce
 		float64(sysInfo.SwapTotal)/1024/1024, float64(sysInfo.SwapFree)/1024/1024,
 		float64(sysInfo.SwapUsed)/1024/1024, float64(sysInfo.MemTotal-sysInfo.MemUsed)/1024/1024)
 
-	fmt.Printf("%-8s %-12s %-5s %-8s %-8s %-10s\n", "PID", "USER", "PR", "CPU (%)", "MEM (%)", "TIME+")
-	for _, proc := range procInfo {
-		fmt.Printf("%-8d %-12s %-5d %-8.2f %-8.2f %-10s\n", proc.PID, proc.User, proc.Priority, proc.CPUUsage, proc.MemUsage, proc.CPUTime)
+		fmt.Printf("%-8s %-12s %-5s %-8s %-8s %-10s\n", "PID", "USER", "PR", "CPU (%)", "MEM (%)", "TIME+")
+		for _, proc := range procInfo {
+			cpuColor := r.getColorForProcUsage(proc.CPUUsage)
+			memColor := r.getColorForMemUsage(proc.MemUsage)
+			fmt.Printf("%-8d %-12s %-5d %s%-8.2f\033[0m %s%-8.2f\033[0m %-10s\n", proc.PID, proc.User, proc.Priority, cpuColor, proc.CPUUsage, memColor, proc.MemUsage, proc.CPUTime)
+		}
+}
+
+func (r *Renderer) getColorForProcUsage(cpuUsage float64) string {
+	switch {
+	case cpuUsage < 50:
+		return "\033[32m" // green
+	case cpuUsage >= 50 && cpuUsage < 70:
+		return "\033[33m" // yellow
+	case cpuUsage >= 70 && cpuUsage < 90:
+		return "\033[35m" // orange
+	default:
+		return "\033[31m" // red
+	}
+}
+
+func (r *Renderer) getColorForMemUsage(memUsage float32) string {
+	switch {
+	case memUsage < 50:
+		return "\033[32m" // green
+	case memUsage >= 50 && memUsage < 70:
+		return "\033[33m" // yellow
+	case memUsage >= 70 && memUsage < 90:
+		return "\033[35m" // orange
+	default:
+		return "\033[31m" // red
 	}
 }
