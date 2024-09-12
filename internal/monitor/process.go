@@ -9,6 +9,7 @@ import (
 
 type ProcessInfo struct {
 	PID      int32
+	Name     string
 	User     string
 	Priority int32
 	CPUUsage float64
@@ -66,6 +67,7 @@ func (m *Monitor) GetTopProcesses(limit int) []*ProcessInfo {
 
 		processList = append(processList, &ProcessInfo{
 			PID:      proc.Pid,
+			Name:     name,
 			User:     user,
 			Priority: priority,
 			CPUUsage: cpuPercent,

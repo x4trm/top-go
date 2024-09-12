@@ -12,14 +12,13 @@ func NewRenderer() *Renderer {
 	return &Renderer{}
 }
 
-func (r *Renderer) ClearScreen(){
+func (r *Renderer) ClearScreen() {
 	fmt.Print("\033[H\033[2J")
 }
 
 func (r *Renderer) Render(sysInfo *monitor.SystemInfo, procInfo []*monitor.ProcessInfo) {
-	
 	r.ClearScreen()
-	
+
 	fmt.Printf("top - %s up %s,  %d user(s),  load average: %.2f, %.2f, %.2f\n", time.Now().Format("15:04:05"),
 		sysInfo.Uptime, sysInfo.Users, sysInfo.LoadAverage[0], sysInfo.LoadAverage[1], sysInfo.LoadAverage[2])
 
@@ -38,12 +37,12 @@ func (r *Renderer) Render(sysInfo *monitor.SystemInfo, procInfo []*monitor.Proce
 		float64(sysInfo.SwapTotal)/1024/1024, float64(sysInfo.SwapFree)/1024/1024,
 		float64(sysInfo.SwapUsed)/1024/1024, float64(sysInfo.MemTotal-sysInfo.MemUsed)/1024/1024)
 
-		fmt.Printf("%-8s %-12s %-5s %-8s %-8s %-10s\n", "PID", "USER", "PR", "CPU (%)", "MEM (%)", "TIME+")
-		for _, proc := range procInfo {
-			cpuColor := r.getColorForProcUsage(proc.CPUUsage)
-			memColor := r.getColorForMemUsage(proc.MemUsage)
-			fmt.Printf("%-8d %-12s %-5d %s%-8.2f\033[0m %s%-8.2f\033[0m %-10s\n", proc.PID, proc.User, proc.Priority, cpuColor, proc.CPUUsage, memColor, proc.MemUsage, proc.CPUTime)
-		}
+	fmt.Printf("%-8s %-12s %-5s %-8s %-8s %-10s %-s\n", "PID", "USER", "PR", "CPU (%)", "MEM (%)", "TIME+", "NAME")
+	for _, proc := range procInfo {
+		cpuColor := r.getColorForProcUsage(proc.CPUUsage)
+		memColor := r.getColorForMemUsage(proc.MemUsage)
+		fmt.Printf("%-8d %-12s %-5d %s%-8.2f\033[0m %s%-8.2f\033[0m %-10s %-s\n", proc.PID, proc.User, proc.Priority, cpuColor, proc.CPUUsage, memColor, proc.MemUsage, proc.CPUTime, proc.Name)
+	}
 }
 
 func (r *Renderer) getColorForProcUsage(cpuUsage float64) string {
